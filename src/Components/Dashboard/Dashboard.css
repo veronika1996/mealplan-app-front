@@ -1,0 +1,18 @@
+/* dashboard.css */
+
+/* Stil za container, da se tekst postavi u centar */
+.dashboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Postavljanje visine ekrana */
+    background-color: #d4f8d4; /* Light green background */
+    width: 100vw;
+  }
+  
+  .welcome-message {
+    color: #388e3c; /* Tamno zelena boja */
+    font-size: 50px; /* Velika veličina fonta */
+    font-weight: bold;
+  }
+  
