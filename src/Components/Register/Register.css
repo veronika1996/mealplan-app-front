@@ -12,10 +12,13 @@
     padding: 60px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 50%;  /* Half of the width */
     min-height: 600px;
-    max-width: 600px;
+    max-width: 800px;
     box-sizing: border-box; /* Added this so padding does not affect the width */
+}
+
+.align-right {
+    text-align: right;
 }
 
 h1 {
@@ -84,4 +87,45 @@ input:focus {
 
 .login-link a:hover {
     text-decoration: underline;
+}
+
+select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+select:focus {
+    outline: none;
+    border-color: #66cc66;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; 
+    margin-bottom: 20px; 
+}
+
+.form-group {
+    flex: 1; 
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #66cc66;
 }
