@@ -45,6 +45,9 @@ const Register: React.FC = () => {
 
             console.log('Registration successful:', response.data);
 
+            localStorage.setItem('user', JSON.stringify(response.data));
+            console.log(localStorage.getItem('user'));
+
             //backend will return target calories
             const targetCalories = response.data.targetCalories;
 
