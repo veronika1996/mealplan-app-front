@@ -1,0 +1,308 @@
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f8fff8;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 18px;
+  }
+  
+  /* Top bar */
+  .topbar {
+    background-color: #2e7d32;
+    color: white;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 16px 40px;
+    font-size: 20px;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .username {
+    font-weight: 600;
+  }
+  
+  .logout-button {
+    background-color: #a5d6a7;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #2e7d32;
+    transition: background-color 0.3s ease;
+    font-size: 18px;
+  }
+  
+  .logout-button:hover {
+    background-color: #81c784;
+  }
+  
+  .ingredients-container {
+    width: 100%;
+    padding: 30px;
+    box-sizing: border-box;
+    margin: 0 auto;
+  }
+  
+  /* Header row */
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Search and Add layout */
+  .top-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .search-container {
+    position: relative;
+    width: 340px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 10px 36px 10px 12px;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    color: #4caf50;
+    font-size: 18px;
+    outline: none;
+  }
+  
+  .search-input::placeholder {
+    color: #4caf50cc;
+  }
+  
+  .search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4caf50;
+    pointer-events: none;
+    font-size: 20px;
+  }
+  
+  .add-button {
+    padding: 12px 24px;
+    font-size: 18px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .add-button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Filter tagovi */
+  .filter-tags {
+    display: grid;
+    grid-template-columns: repeat(14, 1fr); /* tačno 14 filtera u jednom redu */
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  
+  .filter-tag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: #e0f2f1;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: #2e7d32;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+    user-select: none;
+    font-size: 18px;
+  }
+  
+  .filter-tag:hover {
+    background-color: #a5d6a7;
+  }
+  
+  .filter-tag.active {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  /* Tabela */
+  .ingredients-table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 0 8px rgb(0 0 0 / 0.12);
+  }
+  
+  .ingredients-table th,
+  .ingredients-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    font-size: 18px;
+  }
+  
+  .ingredients-table th {
+    background-color: #4caf50;
+    color: white;
+    font-weight: 700;
+  }
+  
+  .ingredients-table tbody tr:hover {
+    background-color: #d0f0c0;
+  }
+  
+  .icon-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .icon-label {
+    font-weight: 700;
+    color: #2e7d32;
+  }
+  
+  /* Ikonice za edit/delete */
+  .icon-button {
+    cursor: pointer;
+    margin-right: 14px;
+    color: #4caf50;
+    font-size: 22px;
+    transition: color 0.3s ease;
+  }
+  
+  .icon-button:hover {
+    color: #2e7d32;
+  }
+  
+  .empty-text {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 40px;
+    font-size: 20px;
+  }
+  
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 30px 35px;
+    border-radius: 12px;
+    width: 420px;
+    max-width: 90%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .modal-content label {
+    font-weight: 700;
+    margin-top: 12px;
+    font-size: 18px;
+  }
+  
+  .modal-content input,
+  .modal-content select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 18px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 22px;
+  }
+  
+  .save-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .save-button:hover {
+    background-color: #388e3c;
+  }
+  
+  .cancel-button {
+    background-color: #ddd;
+    color: #333;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cancel-button:hover {
+    background-color: #bbb;
+  }
+  
+  .error-text {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+  
+  input:disabled {
+    background-color: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+  }
+  
+  .delete-button {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover {
+    background-color: #c0392b;
+  }
+  
