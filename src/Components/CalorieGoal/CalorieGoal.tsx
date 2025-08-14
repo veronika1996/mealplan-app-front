@@ -21,7 +21,7 @@ const CalorieGoal: React.FC = () => {
                 </p>
                 <button
                     className="begin-button"
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/plans')}
                 >
                     BEGIN
                 </button>

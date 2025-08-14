@@ -33,7 +33,7 @@ const Login: React.FC = () => {
       console.log(localStorage.getItem('user'));
       // If the response is successful, redirect the user to the dashboard
       console.log('Login successful:', response.data);
-      navigate('/dashboard'); // or any other URL you want to redirect the user to
+      navigate('/plans'); // or any other URL you want to redirect the user to
     } catch (error: unknown) {
 
         if (axios.isAxiosError(error)) {

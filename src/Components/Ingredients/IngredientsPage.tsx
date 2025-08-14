@@ -2,41 +2,38 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './IngredientsPage.css';
 import { IngredientDTO } from './IngredientDTO';
+import { FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
+import IngredientModal from './IngredientModal';
+
+
 import {
-  FaAppleAlt,
-  FaCarrot,
-  FaDrumstickBite,
-  FaCheese,
-  FaBreadSlice,
-  FaPepperHot,
-  FaWineBottle,
-  FaLeaf,
-  FaUtensilSpoon,
-  FaGlassWhiskey,
-  FaUtensils,
-  FaSeedling,
-  FaTint,
-  FaQuestion,
-  FaEdit,
-  FaTrash,
-  FaSearch,
+  FaAppleAlt, FaCarrot, FaDrumstickBite, FaCheese, FaBreadSlice, FaPepperHot,
+  FaWineBottle, FaLeaf, FaUtensilSpoon, FaGlassWhiskey, FaUtensils, FaSeedling,
+  FaTint, FaQuestion
 } from 'react-icons/fa';
+import NavBar from '../NavBar/NavBar';
 
 const categoryIcons: Record<string, JSX.Element> = {
-  FRUIT: <FaAppleAlt title="Fruit" />,
-  VEGETABLE: <FaCarrot title="Vegetable" />,
-  MEAT: <FaDrumstickBite title="Meat" />,
-  DAIRY: <FaCheese title="Dairy" />,
-  BREAD: <FaBreadSlice title="Bread" />,
-  SPICE: <FaPepperHot title="Spice" />,
-  SAUCE: <FaUtensilSpoon title="Sauce" />,
-  JUICE: <FaGlassWhiskey title="Juice" />,
-  ALCOHOL: <FaWineBottle title="Alcohol" />,
-  PASTA: <FaUtensils title="Pasta" />,
-  RICE: <FaSeedling title="Rice" />,
-  FLOUR: <FaLeaf title="Flour" />,
-  OIL: <FaTint title="Oil" />,
-  OTHER: <FaQuestion title="Other" />,
+  FRUIT: <FaAppleAlt title="VOĆE" />,
+  VEGETABLE: <FaCarrot title="POVRĆE" />,
+  MEAT: <FaDrumstickBite title="MESO" />,
+  DAIRY: <FaCheese title="MLEČNI PROIZVODI" />,
+  BREAD: <FaBreadSlice title="HLEB" />,
+  SPICE: <FaPepperHot title="ZAČINI" />,
+  SAUCE: <FaUtensilSpoon title="SOSEVI" />,
+  JUICE: <FaGlassWhiskey title="SOKOVI" />,
+  ALCOHOL: <FaWineBottle title="ALKOHOL" />,
+  PASTA: <FaUtensils title="TESTENINA" />,
+  RICE: <FaSeedling title="ŽITARICE" />,
+  FLOUR: <FaLeaf title="BRAŠNO" />,
+  OIL: <FaTint title="ULJE" />,
+  OTHER: <FaQuestion title="OSTALO" />,
+};
+
+
+type SortConfig = {
+  key: keyof IngredientDTO;
+  direction: 'asc' | 'desc';
 };
 
 const IngredientsPage: React.FC = () => {
@@ -49,12 +46,21 @@ const IngredientsPage: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [ingredientToDelete, setIngredientToDelete] = useState<IngredientDTO | null>(null);
   const [errors, setErrors] = useState<{ name?: string; calorieNumber?: string }>({});
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', direction: 'asc' });
+  const [activePage, setActivePage] = useState<'PLANS' | 'RECIPES' | 'INGREDIENTS'>('INGREDIENTS');
 
-  const username = localStorage.getItem('username') || 'User';
 
+  const storedUser = localStorage.getItem('user');
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const username = user?.username || 'Korisnik';
+  
   useEffect(() => {
     fetchIngredients();
   }, []);
+
+  const handleNavigate = (page: 'PLANS' | 'RECIPES' | 'INGREDIENTS') => {
+    setActivePage(page);
+  };
 
   const fetchIngredients = async () => {
     try {
@@ -65,8 +71,35 @@ const IngredientsPage: React.FC = () => {
     }
   };
 
-  // Kombinacija filtera i pretrage
-  const filteredIngredients = ingredients.filter(i => {
+  const requestSort = (key: keyof IngredientDTO) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedIngredients = React.useMemo(() => {
+    const sortableIngredients = [...ingredients];
+    if (sortConfig !== null) {
+      sortableIngredients.sort((a, b) => {
+        const aValue = a[sortConfig.key] ?? '';
+        const bValue = b[sortConfig.key] ?? '';
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortConfig.direction === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+        } else {
+          return 0;
+        }
+      });
+    }
+    return sortableIngredients;
+  }, [ingredients, sortConfig]);
+
+  const filteredIngredients = sortedIngredients.filter(i => {
     const matchesCategory = filterCategory ? i.category === filterCategory : true;
     const matchesSearch = i.name.toLowerCase().startsWith(searchName.toLowerCase());
     return matchesCategory && matchesSearch;
@@ -153,10 +186,12 @@ const IngredientsPage: React.FC = () => {
 
   return (
     <>
-      <header className="topbar">
-        <div className="username">Hello, {username}</div>
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
-      </header>
+      <NavBar
+  active={activePage}
+  onNavigate={handleNavigate}
+  username={username}
+  onLogout={handleLogout}
+/>
 
       <div className="ingredients-container">
         <div className="top-controls">
@@ -164,13 +199,13 @@ const IngredientsPage: React.FC = () => {
             <FaSearch className="search-icon" />
             <input
               type="text"
-              placeholder="Search by name..."
+              placeholder="Pronađite sastojak po imenu..."
               value={searchName}
               onChange={e => setSearchName(e.target.value)}
               className="search-input"
             />
           </div>
-          <button className="add-button" onClick={openAddModal}>➕ Add Ingredient</button>
+          <button className="add-button" onClick={openAddModal}>➕ Dodajte nov sastojak</button>
         </div>
 
         <div className="filter-tags">
@@ -181,21 +216,27 @@ const IngredientsPage: React.FC = () => {
               onClick={() => setFilterCategory(filterCategory === cat ? null : cat)}
             >
               {categoryIcons[cat]}
-              <span>{cat}</span>
+              <span> {(categoryIcons[cat] as any).props.title || 'OSTALO'}</span>
             </button>
           ))}
         </div>
 
         {filteredIngredients.length === 0 ? (
-          <p className="empty-text">No ingredients found.</p>
+          <p className="empty-text">Nijedan sastojak nije pronađen.</p>
         ) : (
           <table className="ingredients-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Calories</th>
-                <th>Category</th>
-                <th>Actions</th>
+                <th onClick={() => requestSort('name')}>
+                  Ime {sortConfig?.key === 'name' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th onClick={() => requestSort('calorieNumber')}>
+                  Broj kalorija na 100g {sortConfig?.key === 'calorieNumber' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th onClick={() => requestSort('category')}>
+                  Kategorija {sortConfig?.key === 'category' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -205,7 +246,7 @@ const IngredientsPage: React.FC = () => {
                   <td>{ingredient.calorieNumber}</td>
                   <td className="icon-cell">
                     {categoryIcons[ingredient.category] || categoryIcons['OTHER']}
-                    <span className="icon-label">{ingredient.category}</span>
+                    <span className="icon-label">{(categoryIcons[ingredient.category] as any).props.title || 'OSTALO'}</span>
                   </td>
                   <td>
                     <FaEdit
@@ -226,86 +267,37 @@ const IngredientsPage: React.FC = () => {
         )}
       </div>
 
-      {showEditModal && ingredientToEdit && (
-        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h3>Edit Ingredient</h3>
-            <label>Name:</label>
-            <input type="text" value={ingredientToEdit.name} readOnly disabled />
-            <label>Calories:</label>
-            <input
-              type="number"
-              min={0}
-              value={ingredientToEdit.calorieNumber}
-              onChange={e => setIngredientToEdit({ ...ingredientToEdit, calorieNumber: Number(e.target.value) })}
-            />
-            <label>Category:</label>
-            <select
-              value={ingredientToEdit.category}
-              onChange={e => setIngredientToEdit({ ...ingredientToEdit, category: e.target.value })}
-            >
-              {Object.keys(categoryIcons).map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-            <div className="modal-buttons">
-              <button onClick={handleSave} className="save-button">Save</button>
-              <button onClick={() => setShowEditModal(false)} className="cancel-button">Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modals */}
+      <IngredientModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        ingredient={ingredientToEdit!}
+        setIngredient={setIngredientToEdit}
+        errors={{}}
+        onSave={handleSave}
+        title="Izmenite sastojak"
+        readOnlyName
+      />
 
-      {showAddModal && ingredientToEdit && (
-        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h3>Add New Ingredient</h3>
-            <label>Name:</label>
-            <input
-              type="text"
-              value={ingredientToEdit.name}
-              onChange={e => {
-                setIngredientToEdit({ ...ingredientToEdit, name: e.target.value });
-                setErrors(prev => ({ ...prev, name: undefined }));
-              }}
-            />
-            {errors.name && <div className="error-text">{errors.name}</div>}
-            <label>Calories:</label>
-            <input
-              type="number"
-              min={0}
-              value={ingredientToEdit.calorieNumber}
-              onChange={e => {
-                setIngredientToEdit({ ...ingredientToEdit, calorieNumber: Number(e.target.value) });
-                setErrors(prev => ({ ...prev, calorieNumber: undefined }));
-              }}
-            />
-            {errors.calorieNumber && <div className="error-text">{errors.calorieNumber}</div>}
-            <label>Category:</label>
-            <select
-              value={ingredientToEdit.category}
-              onChange={e => setIngredientToEdit({ ...ingredientToEdit, category: e.target.value })}
-            >
-              {Object.keys(categoryIcons).map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-            <div className="modal-buttons">
-              <button onClick={handleAdd} className="save-button">Add</button>
-              <button onClick={() => setShowAddModal(false)} className="cancel-button">Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <IngredientModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        ingredient={ingredientToEdit!}
+        setIngredient={setIngredientToEdit}
+        errors={errors}
+        onSave={handleAdd}
+        title="Dodajte nov sastojak"
+        saveLabel="Add"
+      />
 
       {showDeleteModal && ingredientToDelete && (
         <div className="modal-overlay" onClick={() => setShowDeleteModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h3>Delete Ingredient</h3>
-            <p>Are you sure you want to delete <strong>{ingredientToDelete.name}</strong>?</p>
+            <h3>Brisanje sastojka</h3>
+            <p>Da li ste sigurni da želite da obrišete sastojak <strong>{ingredientToDelete.name}</strong>?</p>
             <div className="modal-buttons">
-              <button onClick={handleDeleteConfirmed} className="save-button">Delete</button>
-              <button onClick={() => setShowDeleteModal(false)} className="cancel-button">Cancel</button>
+              <button onClick={handleDeleteConfirmed} className="save-button">Obrišite</button>
+              <button onClick={() => setShowDeleteModal(false)} className="cancel-button">Odustanite</button>
             </div>
           </div>
         </div>
