@@ -65,12 +65,7 @@
   .logout-button:hover {
     background-color: #81c784;
   }
-  
-  .user-info {
-    position: relative;
-    cursor: pointer;
-  }
-  
+
   .user-icon {
     color: white;
     transition: color 0.3s;
@@ -82,16 +77,16 @@
   
   .user-dropdown {
     position: absolute;
-    top: 40px; /* ispod ikone */
-    right: 0;
+    top: 60px; 
+    right: 20px;
     background-color: #f8fff8;
     border: 1px solid #4caf50;
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 10px 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-width: 180px;
+    min-width: 200px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     z-index: 1000;
   }

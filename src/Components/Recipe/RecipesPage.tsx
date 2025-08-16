@@ -59,7 +59,7 @@ const RecipesPage: React.FC = () => {
 
   const fetchRecipes = async () => {
     try {
-      const response = await axios.get<RecipeDTO[]>('http://localhost:8084/meal_plan/recipes');
+      const response = await axios.get<RecipeDTO[]>(`http://localhost:8084/meal_plan/recipes?username=${username}`);
       setRecipes(response.data);
     } catch (error) {
       console.error('Greška prilikom učitavanja recepata:', error);
@@ -86,8 +86,8 @@ const RecipesPage: React.FC = () => {
   const handleDeleteConfirmed = async () => {
     if (!recipeToDelete) return;
     try {
-      await axios.delete(`http://localhost:8084/meal_plan/recipes/${recipeToDelete.name}`);
-      setRecipes(recipes.filter(r => r.name !== recipeToDelete.name));
+      await axios.delete(`http://localhost:8084/meal_plan/recipes?id=${recipeToDelete.id}`);
+      setRecipes(recipes.filter(r => r.id !== recipeToDelete.id));
       setShowDeleteModal(false);
       setRecipeToDelete(null);
     } catch (error) {
@@ -232,7 +232,7 @@ const RecipesPage: React.FC = () => {
             if (mode === 'add') {
               await axios.post('http://localhost:8084/meal_plan/recipes', recipe);
             } else if (mode === 'edit') {
-              await axios.put(`http://localhost:8084/meal_plan/recipes/${recipe.name}`, recipe);
+              await axios.put(`http://localhost:8084/meal_plan/recipes?id=${recipe.id}`, recipe);
             }
             setShowRecipeModal(false);
             await fetchRecipes();

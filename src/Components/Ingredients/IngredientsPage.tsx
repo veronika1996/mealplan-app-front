@@ -37,6 +37,7 @@ type SortConfig = {
 };
 
 const IngredientsPage: React.FC = () => {
+
   const [ingredients, setIngredients] = useState<IngredientDTO[]>([]);
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [searchName, setSearchName] = useState<string>('');
@@ -64,7 +65,7 @@ const IngredientsPage: React.FC = () => {
 
   const fetchIngredients = async () => {
     try {
-      const response = await axios.get<IngredientDTO[]>('http://localhost:8083/meal_plan/ingredients');
+      const response = await axios.get<IngredientDTO[]>(`http://localhost:8083/meal_plan/ingredients?username=${username}`);
       setIngredients(response.data);
     } catch (error) {
       console.error('Error fetching ingredients:', error);
@@ -108,8 +109,8 @@ const IngredientsPage: React.FC = () => {
   const handleDeleteConfirmed = async () => {
     if (!ingredientToDelete) return;
     try {
-      await axios.delete(`http://localhost:8083/meal_plan/ingredients/${ingredientToDelete.name}`);
-      setIngredients(ingredients.filter(i => i.name !== ingredientToDelete.name));
+      await axios.delete(`http://localhost:8083/meal_plan/ingredients?id=${ingredientToDelete.id}`);
+      setIngredients(ingredients.filter(i => i.id !== ingredientToDelete.id));
       setShowDeleteModal(false);
       setIngredientToDelete(null);
     } catch (error) {

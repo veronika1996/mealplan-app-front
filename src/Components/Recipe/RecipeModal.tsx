@@ -11,6 +11,10 @@ type RecipeModalProps = {
   onSave: (recipe: RecipeDTO, mode: 'add' | 'edit') => void;
 };
 
+const storedUser = localStorage.getItem('user');
+const user = storedUser ? JSON.parse(storedUser) : null;
+const username = user?.username || 'Korisnik1';
+
 const categoryOptions: { value: RecipeCategory; label: string }[] = [
   { value: 'BREAKFAST', label: 'DORUČAK' },
   { value: 'LUNCH', label: 'RUČAK' },
@@ -41,7 +45,6 @@ const RecipeModal: React.FC<RecipeModalProps> = ({ visible, mode, recipe, onClos
       setEditableRecipe(recipe);
       setCurrentMode(mode);
     } else if (mode === 'add') {
-      const username = localStorage.getItem('username') || 'Korisnik';
       setEditableRecipe({
         id: 0,
         name: '',

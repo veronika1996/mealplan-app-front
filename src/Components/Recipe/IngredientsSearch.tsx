@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { IngredientDTO } from '../Ingredients/IngredientDTO';
+import { IngredientCategory, IngredientDTO } from '../Ingredients/IngredientDTO';
 import IngredientModal from '../Ingredients/IngredientModal';
 
 type IngredientSearchResult = {
@@ -20,29 +20,35 @@ type IngredientsSearchProps = {
   onAddIngredient: (ingredient: { name: string; quantity: number }) => void;
 };
 
+const ingredientsCategoryOptions: { value: IngredientCategory; label: string }[] = [
+  { value: 'FRUIT', label: 'VOĆE' },
+  { value: 'VEGETABLE', label: 'POVRĆE' },
+  { value: 'MEAT', label: 'MESO' },
+  { value: 'DAIRY', label: 'MLEČNI PROIZVODI' },
+  { value: 'BREAD', label: 'HLEB' },
+  { value: 'SPICE', label: 'ZAČINI' },
+  { value: 'SAUCE', label: 'SOSEVI' },
+  { value: 'JUICE', label: 'SOKOVI' },
+  { value: 'ALCOHOL', label: 'ALKOHOL' },
+  { value: 'PASTA', label: 'TESTENINA' },
+  { value: 'RICE', label: 'ŽITARICE' },
+  { value: 'FLOUR', label: 'BRAŠNO' },
+  { value: 'OIL', label: 'ULJE' },
+  { value: 'OTHER', label: 'OSTALO' },
+];
+
 const IngredientsSearch: React.FC<IngredientsSearchProps> = ({ onAddIngredient }) => {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<IngredientSearchResult[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
 
   // za modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [ingredientToAdd, setIngredientToAdd] = useState<IngredientDTO | null>(null);
   const [errors, setErrors] = useState<{ name?: string; calorieNumber?: string }>({});
 
-  const username = localStorage.getItem('username') || 'User';
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const resp = await axios.get<Category[]>('http://localhost:8083/meal_plan/ingredients/categories');
-        setCategories(resp.data || []);
-      } catch {
-        setCategories([]);
-      }
-    };
-    fetchCategories();
-  }, []);
+  const storedUser = localStorage.getItem('user');
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const username = user?.username || 'Korisnik';
 
   useEffect(() => {
     if (query.trim().length < 1) {
@@ -52,7 +58,7 @@ const IngredientsSearch: React.FC<IngredientsSearchProps> = ({ onAddIngredient }
     const fetchIngredients = async () => {
       try {
         const resp = await axios.get<IngredientSearchResult[]>(
-          `http://localhost:8083/meal_plan/ingredients?name=${encodeURIComponent(query)}`
+          `http://localhost:8083/meal_plan/ingredients?username=${username}`
         );
         setSearchResults(
           (resp.data || []).filter(i =>
@@ -61,7 +67,7 @@ const IngredientsSearch: React.FC<IngredientsSearchProps> = ({ onAddIngredient }
         );
       } catch (err) {
         try {
-          const all = await axios.get<IngredientSearchResult[]>('http://localhost:8083/meal_plan/ingredients');
+          const all = await axios.get<IngredientSearchResult[]>(`http://localhost:8083/meal_plan/ingredients?username=${username}`);
           const filtered = (all.data || []).filter(i =>
             i.name.toLowerCase().startsWith(query.toLowerCase())
           );
@@ -76,8 +82,8 @@ const IngredientsSearch: React.FC<IngredientsSearchProps> = ({ onAddIngredient }
 
   const getCategoryTitle = (categoryValue?: string) => {
     if (!categoryValue) return '';
-    const found = categories.find(cat => cat.value === categoryValue);
-    return found ? found.title : categoryValue;
+    const found = ingredientsCategoryOptions.find(cat => cat.value === categoryValue);
+    return found ? found.label : 'OSTALO';
   };
 
   const openAddModal = () => {
