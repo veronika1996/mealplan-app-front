@@ -42,6 +42,9 @@ const RecipesPage: React.FC = () => {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', direction: 'asc' });
   const [activePage, setActivePage] = useState<'PLANS' | 'RECIPES' | 'INGREDIENTS'>('INGREDIENTS');
 
+  // PAGINATION
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipesPerPage = 10;
 
   const storedUser = localStorage.getItem('user');
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -69,7 +72,6 @@ const RecipesPage: React.FC = () => {
   const handleNavigate = (page: 'PLANS' | 'RECIPES' | 'INGREDIENTS') => {
     setActivePage(page);
   };
-
 
   const openViewModal = (recipe: RecipeDTO) => {
     setSelectedRecipe(recipe);
@@ -113,6 +115,11 @@ const RecipesPage: React.FC = () => {
     return matchesCategory && matchesSearch;
   });
 
+  // reset paginacije kad menjaš filter ili search
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterCategory, searchName]);
+
   const sortedRecipes = React.useMemo(() => {
     let sortable = [...filteredRecipes];
     sortable.sort((a, b) => {
@@ -129,14 +136,20 @@ const RecipesPage: React.FC = () => {
     return sortable;
   }, [filteredRecipes, sortConfig]);
 
+  // paginacija – slice rezultata
+  const indexOfLastRecipe = currentPage * recipesPerPage;
+  const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
+  const currentRecipes = sortedRecipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
+  const totalPages = Math.ceil(sortedRecipes.length / recipesPerPage);
+
   return (
     <>
-        <NavBar
-  active={activePage}
-  onNavigate={handleNavigate}
-  username={username}
-  onLogout={handleLogout}
-/>
+      <NavBar
+        active={activePage}
+        onNavigate={handleNavigate}
+        username={username}
+        onLogout={handleLogout}
+      />
 
       <div className="ingredients-container">
         <div className="top-controls">
@@ -175,50 +188,79 @@ const RecipesPage: React.FC = () => {
         {sortedRecipes.length === 0 ? (
           <p className="empty-text">Nema pronađenih recepata.</p>
         ) : (
-          <table className="ingredients-table">
-            <thead>
-              <tr>
-                <th onClick={() => requestSort('name')}>
-                  Naziv {sortConfig.key === 'name' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                </th>
-                <th onClick={() => requestSort('caloriesNumber')}>
-                  Kalorije po porciji {sortConfig.key === 'caloriesNumber' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                </th>
-                <th onClick={() => requestSort('category')}>
-                  Kategorija {sortConfig.key === 'category' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                </th>
-                <th onClick={() => requestSort('numberOfPortions')}>
-                  Broj porcija {sortConfig.key === 'numberOfPortions' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                </th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedRecipes.map(recipe => (
-                <tr key={recipe.id}>
-                  <td>{recipe.name}</td>
-                  <td>{recipe.caloriesNumber}</td>
-                  <td className="icon-cell">
-                    {categoryIcons[recipe.category]?.icon || categoryIcons['OTHER'].icon}
-                    <span className="icon-label">{categoryIcons[recipe.category]?.label || categoryIcons['OTHER'].label}</span>
-                  </td>
-                  <td>{recipe.numberOfPortions}</td>
-                  <td>
-                    <FaEye
-                      className="icon-button"
-                      title="Prikaži recept"
-                      onClick={() => openViewModal(recipe)}
-                    />
-                    <FaTrash
-                      className="icon-button"
-                      title="Obriši recept"
-                      onClick={() => { setRecipeToDelete(recipe); setShowDeleteModal(true); }}
-                    />
-                  </td>
+          <>
+            <table className="ingredients-table">
+              <thead>
+                <tr>
+                  <th onClick={() => requestSort('name')}>
+                    Naziv {sortConfig.key === 'name' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                  </th>
+                  <th onClick={() => requestSort('caloriesNumber')}>
+                    Kalorije po porciji {sortConfig.key === 'caloriesNumber' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                  </th>
+                  <th onClick={() => requestSort('category')}>
+                    Kategorija {sortConfig.key === 'category' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                  </th>
+                  <th onClick={() => requestSort('numberOfPortions')}>
+                    Broj porcija {sortConfig.key === 'numberOfPortions' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                  </th>
+                  <th></th>
                 </tr>
+              </thead>
+              <tbody>
+                {currentRecipes.map(recipe => (
+                  <tr key={recipe.id}>
+                    <td>{recipe.name}</td>
+                    <td>{recipe.caloriesNumber}</td>
+                    <td className="icon-cell">
+                      {categoryIcons[recipe.category]?.icon || categoryIcons['OTHER'].icon}
+                      <span className="icon-label">{categoryIcons[recipe.category]?.label || categoryIcons['OTHER'].label}</span>
+                    </td>
+                    <td>{recipe.numberOfPortions}</td>
+                    <td>
+                      <FaEye
+                        className="icon-button"
+                        title="Prikaži recept"
+                        onClick={() => openViewModal(recipe)}
+                      />
+                      <FaTrash
+                        className="icon-button"
+                        title="Obriši recept"
+                        onClick={() => { setRecipeToDelete(recipe); setShowDeleteModal(true); }}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* PAGINATION */}
+            <div className="pagination">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                ◀
+              </button>
+
+              {[...Array(totalPages || 1)].map((_, i) => (
+                <button
+                  key={i}
+                  className={currentPage === i + 1 ? "active" : ""}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
               ))}
-            </tbody>
-          </table>
+
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages || 1))}
+                disabled={currentPage === totalPages || totalPages === 0}
+              >
+                ▶
+              </button>
+            </div>
+          </>
         )}
       </div>
 

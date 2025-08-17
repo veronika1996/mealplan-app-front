@@ -5,7 +5,6 @@ import { IngredientDTO } from './IngredientDTO';
 import { FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import IngredientModal from './IngredientModal';
 
-
 import {
   FaAppleAlt, FaCarrot, FaDrumstickBite, FaCheese, FaBreadSlice, FaPepperHot,
   FaWineBottle, FaLeaf, FaUtensilSpoon, FaGlassWhiskey, FaUtensils, FaSeedling,
@@ -30,14 +29,12 @@ const categoryIcons: Record<string, JSX.Element> = {
   OTHER: <FaQuestion title="OSTALO" />,
 };
 
-
 type SortConfig = {
   key: keyof IngredientDTO;
   direction: 'asc' | 'desc';
 };
 
 const IngredientsPage: React.FC = () => {
-
   const [ingredients, setIngredients] = useState<IngredientDTO[]>([]);
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [searchName, setSearchName] = useState<string>('');
@@ -49,12 +46,13 @@ const IngredientsPage: React.FC = () => {
   const [errors, setErrors] = useState<{ name?: string; calorieNumber?: string }>({});
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', direction: 'asc' });
   const [activePage, setActivePage] = useState<'PLANS' | 'RECIPES' | 'INGREDIENTS'>('INGREDIENTS');
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const storedUser = localStorage.getItem('user');
   const user = storedUser ? JSON.parse(storedUser) : null;
   const username = user?.username || 'Korisnik';
-  
+
   useEffect(() => {
     fetchIngredients();
   }, []);
@@ -106,6 +104,13 @@ const IngredientsPage: React.FC = () => {
     return matchesCategory && matchesSearch;
   });
 
+  // Paginacija
+  const totalPages = Math.max(Math.ceil(filteredIngredients.length / itemsPerPage), 1);
+  const paginatedIngredients = React.useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredIngredients.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredIngredients, currentPage]);
+
   const handleDeleteConfirmed = async () => {
     if (!ingredientToDelete) return;
     try {
@@ -121,12 +126,8 @@ const IngredientsPage: React.FC = () => {
 
   const handleSave = async () => {
     if (!ingredientToEdit) return;
-
     try {
-      await axios.put(
-        `http://localhost:8083/meal_plan/ingredients/${ingredientToEdit.name}`,
-        ingredientToEdit
-      );
+      await axios.put(`http://localhost:8083/meal_plan/ingredients/${ingredientToEdit.name}`, ingredientToEdit);
       setIngredients((prev) =>
         prev.map(i => (i.name === ingredientToEdit.name ? ingredientToEdit : i))
       );
@@ -140,22 +141,17 @@ const IngredientsPage: React.FC = () => {
 
   const handleAdd = async () => {
     if (!ingredientToEdit) return;
-
     const newErrors: { name?: string; calorieNumber?: string } = {};
-
     if (!ingredientToEdit.name.trim()) {
       newErrors.name = 'Name is required.';
     }
-
     if (ingredientToEdit.calorieNumber <= 0) {
       newErrors.calorieNumber = 'Calories must be a positive number.';
     }
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
     try {
       const response = await axios.post(`http://localhost:8083/meal_plan/ingredients`, ingredientToEdit);
       setIngredients((prev) => [...prev, response.data]);
@@ -188,11 +184,11 @@ const IngredientsPage: React.FC = () => {
   return (
     <>
       <NavBar
-  active={activePage}
-  onNavigate={handleNavigate}
-  username={username}
-  onLogout={handleLogout}
-/>
+        active={activePage}
+        onNavigate={handleNavigate}
+        username={username}
+        onLogout={handleLogout}
+      />
 
       <div className="ingredients-container">
         <div className="top-controls">
@@ -225,46 +221,63 @@ const IngredientsPage: React.FC = () => {
         {filteredIngredients.length === 0 ? (
           <p className="empty-text">Nijedan sastojak nije pronađen.</p>
         ) : (
-          <table className="ingredients-table">
-            <thead>
-              <tr>
-                <th onClick={() => requestSort('name')}>
-                  Ime {sortConfig?.key === 'name' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                </th>
-                <th onClick={() => requestSort('calorieNumber')}>
-                  Broj kalorija na 100g {sortConfig?.key === 'calorieNumber' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                </th>
-                <th onClick={() => requestSort('category')}>
-                  Kategorija {sortConfig?.key === 'category' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                </th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredIngredients.map((ingredient) => (
-                <tr key={ingredient.name}>
-                  <td>{ingredient.name}</td>
-                  <td>{ingredient.calorieNumber}</td>
-                  <td className="icon-cell">
-                    {categoryIcons[ingredient.category] || categoryIcons['OTHER']}
-                    <span className="icon-label">{(categoryIcons[ingredient.category] as any).props.title || 'OSTALO'}</span>
-                  </td>
-                  <td>
-                    <FaEdit
-                      className="icon-button"
-                      title="Edit"
-                      onClick={() => { setIngredientToEdit(ingredient); setShowEditModal(true); }}
-                    />
-                    <FaTrash
-                      className="icon-button"
-                      title="Delete"
-                      onClick={() => { setIngredientToDelete(ingredient); setShowDeleteModal(true); }}
-                    />
-                  </td>
+          <>
+            <table className="ingredients-table">
+              <thead>
+                <tr>
+                  <th onClick={() => requestSort('name')}>
+                    Ime {sortConfig?.key === 'name' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                  </th>
+                  <th onClick={() => requestSort('calorieNumber')}>
+                    Broj kalorija na 100g {sortConfig?.key === 'calorieNumber' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                  </th>
+                  <th onClick={() => requestSort('category')}>
+                    Kategorija {sortConfig?.key === 'category' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                  </th>
+                  <th></th>
                 </tr>
+              </thead>
+              <tbody>
+                {paginatedIngredients.map((ingredient) => (
+                  <tr key={ingredient.name}>
+                    <td>{ingredient.name}</td>
+                    <td>{ingredient.calorieNumber}</td>
+                    <td className="icon-cell">
+                      {categoryIcons[ingredient.category] || categoryIcons['OTHER']}
+                      <span className="icon-label">{(categoryIcons[ingredient.category] as any).props.title || 'OSTALO'}</span>
+                    </td>
+                    <td>
+                      <FaEdit
+                        className="icon-button"
+                        title="Edit"
+                        onClick={() => { setIngredientToEdit(ingredient); setShowEditModal(true); }}
+                      />
+                      <FaTrash
+                        className="icon-button"
+                        title="Delete"
+                        onClick={() => { setIngredientToDelete(ingredient); setShowDeleteModal(true); }}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Paginacija uvek vidljiva */}
+            <div className="pagination">
+              <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}> ◀ </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={page === currentPage ? 'active' : ''}
+                >
+                  {page}
+                </button>
               ))}
-            </tbody>
-          </table>
+              <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}> ▶</button>
+            </div>
+          </>
         )}
       </div>
 
