@@ -1,0 +1,192 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #d4f8d4;
+  font-size: 18px;
+}
+
+.meal-planner-page {
+  width: 100%;
+  padding: 0px 90px 90px 90px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.plan-block {
+  background-color: white;
+  border-radius: 12px;
+  border: 3px solid #4caf50;;
+  margin: 20px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 45%;
+  min-height: 100px;
+  width: 45%;
+}
+
+.plan-block-title {
+  margin-top : 0 !important;
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #2e7d32;
+ }
+
+
+.plan-block-search {
+  margin-bottom: 16px;
+  width: 90%;
+}
+
+.plan-block-recipes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plan-block-recipe-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: #4caf50;
+  border-radius: 12px;
+  transition: background-color 0.2s;
+}
+
+.plan-block-recipe-item:hover {
+  background-color: #a5d6a7;
+}
+
+.recipe-name {
+  font-size: 25px;
+  color: white;
+  font-weight: bold;
+}
+
+.recipe-icons {
+  display: flex;
+  gap: 10px;
+  font-size: 25px;
+  cursor: pointer;
+  margin-right: 14px;
+  color: white
+}
+
+.action-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+
+.date-input {
+  padding: 4px 8px;         
+  font-size: 18px;         
+  font-weight: bold; 
+  border: 2px solid #388e3c;
+  border-radius: 8px;
+  background-color: #f8fff8 ;
+  color: #1b5e20;  
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 300px;       
+  height: 50px;
+}
+
+.date-input:focus {
+  border-color: #4caf50;       
+  background-color: #c8e6c9;  
+  box-shadow: 0 0 5px #4caf50;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  filter: invert(35%) sepia(50%) saturate(500%) hue-rotate(80deg);
+}
+
+.plans-header {
+  text-align: center;
+  margin: 20px 20px 0px 20px;
+  padding: 16px 16px 0px 16px;
+}
+
+.page-title {
+  padding-top: 0;
+  font-size: 35px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.left-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.calories-info p {
+  margin: 2px 0;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+}
+
+.right-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+
+}
+
+
+.disabled-button {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 4px;
+  background:#a5d6a7; 
+  color:  white; 
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.button-wrapper:hover .tooltip {
+  display: block;
+}
+
+
+.remaining-calories.negative {
+  color: #d32f2f; /* crvena */
+  font-weight: 600;
+}

@@ -9,22 +9,22 @@ const CalorieGoal: React.FC = () => {
     const targetCalories = location.state?.targetCalories || 0;
 
     return (
-        <div className="calorie-container">
-            <div className="calorie-form">
-                <h1>Calorie Goal</h1>
+        <div className="container-wrapper">
+            <div className="container-form">
                 <p>
-                    Based on the information you provided, the number of calories you need to consume to reach your target weight is:
+                    Na osnovu podataka koje ste uneli, preporučeni dnevni unos kalorija kako biste postigli željenu telesnu težinu iznosi:
                 </p>
-                <span className='calorie-number'> {targetCalories} </span>
+                <span className='calorie-number'>{targetCalories} kcal</span>
                 <p>
-                    Click the button below to BEGIN creating your meal plans and adding desired recipes.
+                    Kliknite na dugme ispod kako biste započeli kreiranje plana ishrane i dodavanje Vaših recepata.
                 </p>
-                <button
-                    className="begin-button"
-                    onClick={() => navigate('/plans')}
-                >
-                    BEGIN
-                </button>
+                <div className="button-div">
+                    <button
+                        onClick={() => navigate('/plans')}
+                    >
+                        ZAPOČNI
+                    </button>
+                </div>
             </div>
         </div>
     );

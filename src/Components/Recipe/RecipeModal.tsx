@@ -9,6 +9,7 @@ type RecipeModalProps = {
   recipe: RecipeDTO | null;
   onClose: () => void;
   onSave: (recipe: RecipeDTO, mode: 'add' | 'edit') => void;
+  showEditIcon?: boolean; 
 };
 
 const storedUser = localStorage.getItem('user');
@@ -24,7 +25,7 @@ const categoryOptions: { value: RecipeCategory; label: string }[] = [
   { value: 'DESERT', label: 'DEZERT' },
 ];
 
-const RecipeModal: React.FC<RecipeModalProps> = ({ visible, mode, recipe, onClose, onSave }) => {
+const RecipeModal: React.FC<RecipeModalProps> = ({ visible, mode, recipe, onClose, onSave,   showEditIcon}) => {
   const [editableRecipe, setEditableRecipe] = useState<RecipeDTO>({
     id: 0,
     name: '',
@@ -145,7 +146,9 @@ const RecipeModal: React.FC<RecipeModalProps> = ({ visible, mode, recipe, onClos
             <>
               <div className="recipe-name-row">
                 <h2 className="recipe-name-display">{editableRecipe.name}</h2>
-                <FaEdit className="edit-icon" onClick={enableEdit} title="Izmeni recept" />
+                {showEditIcon && !isEditable && (
+  <FaEdit className="edit-icon" onClick={enableEdit} title="Izmeni recept" />
+)}
               </div>
               <div className="recipe-info-row">
                 <p className="recipe-servings">

@@ -11,11 +11,6 @@ type IngredientSearchResult = {
   addedBy?: string;
 };
 
-type Category = {
-  value: string;
-  title: string;
-};
-
 type IngredientsSearchProps = {
   onAddIngredient: (ingredient: { name: string; quantity: number }) => void;
 };
@@ -166,7 +161,7 @@ const IngredientsSearch: React.FC<IngredientsSearchProps> = ({ onAddIngredient }
         </ul>
       ) : query.trim().length > 0 ? (
         <div style={{ marginTop: 8 }}>
-          Nije pronađen nijedan sastojak čije ime tako počinje.
+          Nije pronađen nijedan sastojak.
           <button
             className="save-button"
             onClick={openAddModal}
@@ -186,7 +181,7 @@ const IngredientsSearch: React.FC<IngredientsSearchProps> = ({ onAddIngredient }
         errors={errors}
         onSave={handleAddIngredient}
         title="Dodajte nov sastojak"
-        saveLabel="Add"
+        saveLabel="Sačuvaj"
       />
     </div>
   );
