@@ -234,7 +234,6 @@ const IngredientsPage: React.FC = () => {
                   <th onClick={() => requestSort('category')}>
                     Kategorija {sortConfig?.key === 'category' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                   </th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -244,19 +243,7 @@ const IngredientsPage: React.FC = () => {
                     <td>{ingredient.calorieNumber}</td>
                     <td className="icon-cell">
                       {categoryIcons[ingredient.category] || categoryIcons['OTHER']}
-                      <span className="icon-label">{(categoryIcons[ingredient.category] as any).props.title || 'OSTALO'}</span>
-                    </td>
-                    <td>
-                      <FaEdit
-                        className="icon-button"
-                        title="Edit"
-                        onClick={() => { setIngredientToEdit(ingredient); setShowEditModal(true); }}
-                      />
-                      <FaTrash
-                        className="icon-button"
-                        title="Delete"
-                        onClick={() => { setIngredientToDelete(ingredient); setShowDeleteModal(true); }}
-                      />
+                      <span className="icon-label">  {(categoryIcons[ingredient.category] as any).props.title || 'OSTALO'}</span>
                     </td>
                   </tr>
                 ))}
@@ -301,7 +288,7 @@ const IngredientsPage: React.FC = () => {
         errors={errors}
         onSave={handleAdd}
         title="Dodajte nov sastojak"
-        saveLabel="Add"
+        saveLabel="Sačuvaj"
       />
 
       {showDeleteModal && ingredientToDelete && (

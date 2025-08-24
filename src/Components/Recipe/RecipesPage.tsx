@@ -40,7 +40,7 @@ const RecipesPage: React.FC = () => {
   const [modalMode, setModalMode] = useState<'view' | 'add' | 'edit'>('view');
 
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', direction: 'asc' });
-  const [activePage, setActivePage] = useState<'PLANS' | 'RECIPES' | 'INGREDIENTS'>('INGREDIENTS');
+  const [activePage, setActivePage] = useState<'PLANS' | 'RECIPES' | 'INGREDIENTS'>('RECIPES');
 
   // PAGINATION
   const [currentPage, setCurrentPage] = useState(1);
@@ -157,7 +157,7 @@ const RecipesPage: React.FC = () => {
             <FaSearch className="search-icon" />
             <input
               type="text"
-              placeholder="Pretraži po nazivu..."
+              placeholder="Pronađite recept po imenu..."
               value={searchName}
               onChange={e => setSearchName(e.target.value)}
               className="search-input"
@@ -168,7 +168,7 @@ const RecipesPage: React.FC = () => {
             onClick={openAddModal}
             style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            <FaPlus /> Dodaj recept
+            <FaPlus /> Dodajte recept
           </button>
         </div>
 
@@ -214,7 +214,7 @@ const RecipesPage: React.FC = () => {
                     <td>{recipe.caloriesNumber}</td>
                     <td className="icon-cell">
                       {categoryIcons[recipe.category]?.icon || categoryIcons['OTHER'].icon}
-                      <span className="icon-label">{categoryIcons[recipe.category]?.label || categoryIcons['OTHER'].label}</span>
+                      <span className="icon-label">  {categoryIcons[recipe.category]?.label || categoryIcons['OTHER'].label}</span>
                     </td>
                     <td>{recipe.numberOfPortions}</td>
                     <td>
@@ -283,6 +283,7 @@ const RecipesPage: React.FC = () => {
             alert('Čuvanje recepta nije uspelo.');
           }
         }}
+        showEditIcon={true} 
       />
 
       {showDeleteModal && recipeToDelete && (

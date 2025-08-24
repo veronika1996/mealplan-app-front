@@ -1,0 +1,105 @@
+.container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #d4f8d4;
+    width: 100vw;
+}
+
+.home-form {
+    background-color: white;
+    padding: 60px;
+    border-radius: 8px;
+    border: 2px solid #4caf50;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    min-height: 600px;
+    max-width: 700px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.app-title {
+    color: #2e7d32;
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.welcome-text {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.highlight {
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.features-title {
+    color: #2e7d32;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.features-list {
+    margin-left: 40px;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.button-div {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.button-div button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.button-div button:hover {
+    background-color: #2c6c31;
+}
+
+.login-link {
+    color: #4caf50;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-link:hover {
+    color: #2c6c31;
+    text-decoration: underline;
+}
+
+.features-list {
+    list-style: none; 
+    padding-left: 0; 
+}
+
+.features-list li {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.motivational-text {
+    text-align: center;
+    color: #2e7d32; 
+    font-size: 1.1rem;
+    margin-top: 20px;
+    line-height: 1.5;
+}
+

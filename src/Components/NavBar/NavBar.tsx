@@ -57,7 +57,7 @@ const NavBar: React.FC<NavBarProps> = ({ username, onLogout }) => {
           <div className="user-dropdown">
             <div className="user-name">{username}</div>
             <button className="logout-button" onClick={onLogout}>
-              Odjavi se
+              Odjavite se
             </button>
           </div>
         )}

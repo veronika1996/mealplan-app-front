@@ -6,11 +6,13 @@ import CalorieGoal from './Components/CalorieGoal/CalorieGoal';
 import IngredientsPage from './Components/Ingredients/IngredientsPage';
 import PlansPage from './Components/Plans/PlansPage';
 import RecipesPage from './Components/Recipe/RecipesPage';
+import HomePage from './Components/HomePage/HomePage';
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path='/' element={<HomePage/>} />
         <Route path="/login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="/calorie-goal" element={<CalorieGoal />} />
