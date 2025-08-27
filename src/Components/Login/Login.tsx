@@ -39,7 +39,7 @@ const Login: React.FC = () => {
     <div className="login-container">
       <div className="login-form">
         <h2>Prijavite se</h2>
-        {error && <p className="error-message" style={{color: 'red'}}>{error}</p>}
+        {error && <p className="error-message-login" style={{color: 'red'}}>{error}</p>}
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <label>Korisničko ime:</label>
@@ -58,9 +58,10 @@ const Login: React.FC = () => {
     onChange={(e) => setPassword(e.target.value)}
     style={{
       width: '100%',
+      height: '57px',
       paddingRight: '2.5rem',
       boxSizing: 'border-box', 
-      fontSize: '18px',
+      fontSize: '25px',
     }}
   />
   <span
@@ -87,7 +88,7 @@ const Login: React.FC = () => {
 
 
           <div className="button-div">
-            <button type="submit">Prijavi se</button>
+            <button type="submit" style={{fontSize: '25px', marginTop: '50px'}}>Prijavi se</button>
           </div>
         </form>
 

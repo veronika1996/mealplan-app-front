@@ -11,11 +11,6 @@ type IngredientSearchResult = {
   addedBy?: string;
 };
 
-type Category = {
-  value: string;
-  title: string;
-};
-
 type IngredientsSearchProps = {
   onAddIngredient: (ingredient: { name: string; quantity: number }) => void;
 };
